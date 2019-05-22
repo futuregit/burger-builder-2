@@ -5,18 +5,28 @@ import BurgerIngredient from './BurgerIngredient/BurgerIngredients';
 
 const burger = (props) => {
   //transformedIngredients takes an Object.keys which
-  //  collect the array keys from props.BurgerIngredients.
+  //  tranform the props.ingredients object into an array
+  //  of keys.
   // The map takes the keys and and return a destructured
-  //  array. The destructured map method retrieve the indexes and
-  //  return BurgerIngredient component.
+  //  empty array. The destructured Array creates an empty array
+  //  based on the key value number. Then, the array
+  //  the number value retrieve the indexes and
+  //  return BurgerIngredient components.
 
-  const transformedIngredients = Object.keys(props.ingredients)
+  let transformedIngredients = Object.keys(props.ingredients)
     .map(igKey =>{
       return [...Array(props.ingredients[igKey])].map((_, i) => {
         return <BurgerIngredient key={igKey + i} type={igKey} />;
       });
-    });
-  console.log("Inside Burger transformedIngredients", transformedIngredients)
+    })
+      .reduce((arr,el) => {
+        return arr.concat(el);
+      }, []);
+    console.log(transformedIngredients)
+    if (transformedIngredients.length === 0){
+      transformedIngredients = <p>Please start adding ingredients</p>;
+    }
+
   return (
     <div className={classes.Burger}>
       <BurgerIngredient type="bread-top" />
