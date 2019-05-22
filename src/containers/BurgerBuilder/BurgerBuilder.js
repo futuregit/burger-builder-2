@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Auxilliary from '../../hoc/Auxilliary';
 import Burger from '../../components/Burger/Burger';
+import BuildControls from '../../components/Burger/BuildControls/BuildControls';
 
 class BurgerBuilder extends Component {
   // constructor(props){
@@ -14,11 +15,20 @@ class BurgerBuilder extends Component {
       meat: 0
     }
   }
+
+  addIngredientHandler = (type) => {
+    const oldCount = this.state.ingredients[type];
+    const updatedCount = oldCount + 1;
+  }
+  removeIngredientHandler = (type) => {
+
+  }
+
   render(){
     return (
       <Auxilliary>
         <Burger ingredients={this.state.ingredients}/>
-        <div>Build Controls</div>
+        <BuildControls />
       </Auxilliary>
     );
   }
