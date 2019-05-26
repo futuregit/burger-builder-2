@@ -11,6 +11,7 @@ const sideDrawer = () => {
         <Logo/>
       </div>
       <nav>
+        <p>Items here</p>
         <NavigationItems />
       </nav>
     </div>
