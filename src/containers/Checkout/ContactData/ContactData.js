@@ -80,6 +80,23 @@ class ContactData extends Component {
       });
   }
 
+  inputChangedHandler = (event, inputIdentifier) => {
+    console.log("Inside ContactData inputChangedHandler inputIdentifier value", inputIdentifier)
+    const updatedOrderForm = {
+      ...this.state.orderForm
+    }
+    const updatedFormElement = {
+      ...updatedOrderForm[inputIdentifier]
+    };
+    console.log("Inside ContactData inputChangedHandler updatedFormElement value", updatedFormElement)
+    updatedFormElement.value = event.target.value;
+    updatedOrderForm[inputIdentifier] = updatedFormElement;
+    console.log("Inside ContactData inputChangedHandler updatedOrderForm value", updatedOrderForm)
+    console.log("Inside ContactData inputChangedHandler state.orderForm value", this.state.orderForm)
+
+    this.setState({orderForm: updatedOrderForm});
+  }
+
   render() {
     const formElememtsArray = [];
     for (let key in this.state.orderForm) {
@@ -90,13 +107,14 @@ class ContactData extends Component {
     }
     console.log("And the value of ContactData formElememtsArray is", formElememtsArray)
     let form = (
-      <form>        
+      <form>
         {formElememtsArray.map(formElement => (
           <Input
             key={formElement.id}
             elementType={formElement.config.elementType}
             elementConfig={formElement.config.elementConfig}
-            value={formElement.config.value}/>
+            value={formElement.config.value}
+            changed={(event) => this.inputChangedHandler(event, formElement.id)} />
         ))}
         <Button btnType="Success" clicked={this.orderHandler}>ORDER</Button>
       </form>
