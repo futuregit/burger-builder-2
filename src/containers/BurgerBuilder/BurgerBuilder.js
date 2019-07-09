@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import Auxilliary from '../../hoc/Auxilliary/Auxilliary';
 import Burger from '../../components/Burger/Burger';
 import BuildControls from '../../components/Burger/BuildControls/BuildControls';
@@ -28,13 +29,18 @@ class BurgerBuilder extends Component {
   componentDidMount() {
     //Getting ingredients from server and populating state.ingredients
     // {bacon: 0, cheese: 0, meat: 0, salad: 0}
-    axios.get('https://react-burger-builder2-28e8f.firebaseio.com/ingredients.json')
-      .then(response => {
-        this.setState({ingredients: response.data});
-      })
-      .catch(error => {
-        this.setState({error: true});
-      });
+    // axios.get('https://react-burger-builder2-28e8f.firebaseio.com/ingredients.json')
+    //   .then(response => {
+    //     this.setState({ingredients: response.data});
+    //     return response
+    //   })
+    //   .then(response => {
+    //     console.log("response", response)
+    //     this.props.onLoadIngredients(response.data)
+    //   })
+    //   .catch(error => {
+    //     this.setState({error: true});
+    //   });
   }
 
   //updatePurchaseState logic take the sum of all ingredients
@@ -163,6 +169,8 @@ class BurgerBuilder extends Component {
       }
       burger = (
         <Auxilliary>
+
+          {'test'}
           <Burger ingredients={this.state.ingredients}/>
           <BuildControls
             ingredientAdded={this.addIngredientHandler}
@@ -172,7 +180,6 @@ class BurgerBuilder extends Component {
             /* When the ORDER NOW button is clicked in the BuildControls component,
              the purchaseHandler is executed which in turn set purchasing to
              true. Then the modal with the order summary will load. */
-
             ordered={this.purchaseHandler}
             price={this.state.totalPrice}/>
           </Auxilliary>
@@ -191,4 +198,16 @@ class BurgerBuilder extends Component {
   }
 }
 
-export default withErrorHandler(BurgerBuilder, axios);
+const mapStateToProps = state => {
+  return {
+    ign: state.ingredients
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    onLoadIngredients: (ign) => dispatch({type: 'INGREDIENTS', ign:ign})
+  };
+};
+
+export default withErrorHandler(connect(mapStateToProps, mapDispatchToProps)(BurgerBuilder), axios);
