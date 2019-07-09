@@ -9,10 +9,11 @@ const input = (props) => {
     inputClasses.push(classes.Invalid);
   }
   switch(props.elementType){
-    case('input'):
-    console.log("Inside Input input switch statement ", props.elementConfig)
+    case('input'):  
       inputElement = <input
         className={inputClasses.join(' ')}
+        /* props.elementConfig contains input attributes such as
+            placeholder="anything" type="input" */
         {...props.elementConfig}
         value={props.value}
         onChange={props.changed} />;
@@ -40,7 +41,6 @@ const input = (props) => {
         );
       break;
     default:
-      console.log("Inside Input default switch statement ", props.elementConfig)
       inputElement = <input
         className={classes.InputElement}
         {...props.elementConfig}

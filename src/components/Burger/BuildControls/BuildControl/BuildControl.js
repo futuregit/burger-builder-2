@@ -1,6 +1,7 @@
 import React from  'react';
 import classes from './BuildControl.css';
-
+// Controls the presentation of the displaying of the ingredients and
+// more and less button.
 const buildControl = (props) => (
   <div className={classes.BuildControl}>
     <div className={classes.Label}>{props.label}</div>

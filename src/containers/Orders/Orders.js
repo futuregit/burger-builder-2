@@ -15,11 +15,19 @@ class Orders extends Component {
       .then(res => {
         const fetchedOrders = [];
         for (let key in res.data) {
+          // res.data contain order detail similar to:
+          // -dDhojoOpVBOmpcys
+                // customer
+                // deliveryMethod:
+                // "Speed of light"
+                // ingredients
+                // price:
+                // "8.5"
           fetchedOrders.push({
             ...res.data[key],
             id: key
           });
-          console.log("And the value of fetchedOrders is", fetchedOrders)
+          // fetchedOrders contains array of order details and ids
         }
         this.setState({loading: false, orders: fetchedOrders});
       })

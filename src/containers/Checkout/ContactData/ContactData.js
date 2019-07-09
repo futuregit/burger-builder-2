@@ -93,10 +93,16 @@ class ContactData extends Component {
   }
 
   orderHandler = (event) => {
+    // event.preventDefault() stops the page from reloading
     event.preventDefault();
     this.setState({loading: true});
     const formData = {};
+    // For each interation of the for statement,
+    // formElementIdentifier is equal to
+    // name, street, zipcode, country, email, and deliveryMethod
     for (let formElementIdentifier in this.state.orderForm){
+      // formData for an example could be equal to user input like:
+      // {name: "arnold", street: "1234 Main", zipcode: "60612", country: "US", email: "fred@email.com"}
       formData[formElementIdentifier] = this.state.orderForm[formElementIdentifier].value;
     }
     const order = {
@@ -107,7 +113,7 @@ class ContactData extends Component {
     axios.post('/orders.json', order)
       .then(response => {
         this.setState({loading: false});
-        console.log("Inside ContactData Axios post history", this.props.history)
+        //Redirects back to home.
         this.props.history.push('/');
       })
       .catch(error => {
@@ -118,34 +124,39 @@ class ContactData extends Component {
   checkValidity(value, rules){
     let isValid = true;
     if (rules.required) {
+      // .trim() removes whitespaces on either ends.
+      // test to see if value really do have a value.
       isValid = value.trim() !== '' && isValid;
     }
-
+    // rules.minLength or maxLength property is true if it exists and has any value.
     if (rules.minLength) {
+      // Check first to see if the length of value is greater or equal to minLength.
       isValid = value.length >= rules.minLength && isValid;
     }
     if (rules.maxLength) {
+      // Only true if minLength statement returned true for IsValid
+      // in addition to maxLength requirments.
+      // In other words, are you with a range.
       isValid = value.length <= rules.maxLength && isValid;
     }
     return isValid;
   }
 
   inputChangedHandler = (event, inputIdentifier) => {
-    console.log("Inside ContactData inputChangedHandler inputIdentifier value", inputIdentifier)
+    // inputIdentifier is either:
+    // name, street, zipcode, country, email, or deliveryMethod
     const updatedOrderForm = {
       ...this.state.orderForm
     }
+    // updatedFormElement may have something like:
+    //  elementType: "input", elementConfig: {placeholder: "Zip Code", type: "text"}, value: "", validation: {…}, valid: false, …}
     const updatedFormElement = {
       ...updatedOrderForm[inputIdentifier]
     };
-    console.log("Inside ContactData inputChangedHandler updatedFormElement value", updatedFormElement)
     updatedFormElement.value = event.target.value;
     updatedFormElement.valid = this.checkValidity(updatedFormElement.value, updatedFormElement.validation);
     updatedFormElement.touched = true;
     updatedOrderForm[inputIdentifier] = updatedFormElement;
-    console.log("Inside ContactData inputChangedHandler updatedFormElement value", updatedFormElement);
-    console.log("Inside ContactData inputChangedHandler updatedOrderForm value", updatedOrderForm)
-    console.log("Inside ContactData inputChangedHandler state.orderForm value", this.state.orderForm)
     let formIsValid = true;
     for (let inputIdentifier in updatedOrderForm) {
       formIsValid = updatedOrderForm[inputIdentifier].valid && formIsValid;
@@ -156,12 +167,14 @@ class ContactData extends Component {
   render() {
     const formElememtsArray = [];
     for (let key in this.state.orderForm) {
+      // config may have something like:
+      //  elementType: "input", elementConfig: {placeholder: "Zip Code", type: "text"}, value: "", validation: {…}, valid: false, …}
       formElememtsArray.push({
         id: key,
         config: this.state.orderForm[key]
       });
     }
-    console.log("And the value of ContactData formElememtsArray is", formElememtsArray)
+
     let form = (
       <form onSubmit={this.orderHandler}>
         {formElememtsArray.map(formElement => (

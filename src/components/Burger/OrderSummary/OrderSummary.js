@@ -10,15 +10,17 @@ class OrderSummary extends Component {
   }
 
   render(){
+    // this.props.ingredients is something like {bacon: 0, cheese: 0, meat: 0, salad: 0}
+    // Return a JSX list of ingredients and the count
     const ingredientSummary = Object.keys(this.props.ingredients)
       .map(igKey => {
         return (
-          <li key={igKey}>
+          <li key={igKey}> {/* igKey is either bacon, cheese, meat, or salad. */}
             <span
               style={{textTransform: 'capitalize'}}>
                 {igKey}
             </span>:
-            {this.props.ingredients[igKey]}
+            {this.props.ingredients[igKey]} {/* the number value of ingredients. */}
           </li>
         );
       });
