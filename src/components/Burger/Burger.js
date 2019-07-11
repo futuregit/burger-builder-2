@@ -15,6 +15,7 @@ const burger = (props) => {
 
   let transformedIngredients = Object.keys(props.ingredients)
     .map(igKey =>{
+      console.log(props)
       // Array(props.ingredients[igKey]) look more complicated than it is.
       // It's basically taking the value of ingredients[igKey]
       // which is a number and is creating empty arrays based on the number.
