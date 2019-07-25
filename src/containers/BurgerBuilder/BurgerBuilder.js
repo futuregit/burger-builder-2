@@ -8,7 +8,7 @@ import OrderSummary from '../../components/Burger/OrderSummary/OrderSummary';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
 import axios from '../../axios-orders';
-import * as actionTypes from '../../store/actions';
+import * as burgerBuilderActions from '../../store/actions/index';
 
 const INGREDIENT_PRICES = {
   salad: 0.5,
@@ -20,21 +20,20 @@ const INGREDIENT_PRICES = {
 
 class BurgerBuilder extends Component {
   state = {
-    purchasing: false,
-    loading: false,
-    error: false
+    purchasing: false
   }
 
   componentDidMount() {
     // Getting ingredients from server and populating state.ingredients
     // {bacon: 0, cheese: 0, meat: 0, salad: 0}
-    axios.get('https://react-burger-builder2-28e8f.firebaseio.com/ingredients.json')
-      .then(response => {
-        this.props.onLoadIngredients(response.data)
-      })
-      .catch(error => {
-        this.setState({error: true});
-      });
+    // axios.get('https://react-burger-builder2-28e8f.firebaseio.com/ingredients.json')
+    //   .then(response => {
+    //     this.props.onLoadIngredients(response.data)
+    //   })
+    //   .catch(error => {
+    //     this.setState({error: true});
+    //   });
+    this.props.onLoadIngredients();
   }
 
   //updatePurchaseState logic take the sum of all ingredients
@@ -144,7 +143,7 @@ class BurgerBuilder extends Component {
       disabledInfo[key] = disabledInfo[key] <= 0
     }
     let orderSummary = null;
-    let burger = this.state.error ? <p>Ingredient can't be loaded</p> : <Spinner />;
+    let burger = this.props.error ? <p>Ingredient can't be loaded</p> : <Spinner />;
     // If nothing was ordered this.state.ingredients defaults to null.
     if(this.props.igns){
       orderSummary = (
@@ -154,10 +153,7 @@ class BurgerBuilder extends Component {
           purchaseCancelled={this.purchaseCancelHandler}
           purchaseContinued={this.purchaseContinueHandler}/>
       );
-      // Doesn't change state. It may be because OrderSummary was not ready yet.
-      if (this.state.loading){
-        orderSummary = <Spinner />
-      }
+
       burger = (
         <Auxilliary>
           <Burger ingredients={this.props.igns}/>
@@ -192,15 +188,16 @@ const mapStateToProps = state => {
     igns: state.ingredients,
     grandTotal: state.totalPrice,
     readyToPurchase: state.purchaseable,
-    updatedPurchaseState: state.updatePurchaseState
+    updatedPurchaseState: state.updatePurchaseState,
+    error: state.error
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
-    onLoadIngredients: (loadIgns) => dispatch({type: actionTypes.LOAD_INGREDIENTS, loadIgns: loadIgns}),
-    onIngredientAdded: (ingName) => dispatch({type: actionTypes.ADD_INGREDIENT, ingredientName: ingName }),
-    onIngredientRemoved: (ingName) => dispatch({type: actionTypes.REMOVE_INGREDIENT, ingredientName: ingName })
+    onLoadIngredients: (loadIgns) => dispatch(burgerBuilderActions.initIngredients()),
+    onIngredientAdded: (ingName) => dispatch(burgerBuilderActions.addIngredient(ingName)),
+    onIngredientRemoved: (ingName) => dispatch(burgerBuilderActions.removeIngredient(ingName))
 
   };
 };
