@@ -1,0 +1,125 @@
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+
+import Input from '../../components/UI/Input/Input';
+import Button from '../../components/UI/Button/Button';
+import classes from './Auth.css';
+import * as actions from '../../store/actions/index';
+
+class Auth extends Component {
+  state = {
+    controls: {
+      email: {
+        elementType: 'input',
+        elementConfig: {
+          type: 'email',
+          placeholder: 'Your email'
+        },
+        value: '',
+        validation: {
+          required: true,
+          isEmail: true
+        },
+        valid: false,
+        touched: false
+      },
+      password: {
+        elementType: 'input',
+        elementConfig: {
+          type: 'password',
+          placeholder: 'Your password'
+        },
+        value: '',
+        validation: {
+          required: true,
+          minLength: 6
+        },
+        valid: false,
+        touched: false
+      }
+    }
+  };
+
+  checkValidity(value, rules){
+    let isValid = true;
+    if (rules.required) {
+      // .trim() removes whitespaces on either ends.
+      // test to see if value really do have a value.
+      isValid = value.trim() !== '' && isValid;
+    }
+    // rules.minLength or maxLength property is true if it exists and has any value.
+    if (rules.minLength) {
+      // Check first to see if the length of value is greater or equal to minLength.
+      isValid = value.length >= rules.minLength && isValid;
+    }
+    if (rules.maxLength) {
+      // Only true if minLength statement returned true for IsValid
+      // in addition to maxLength requirments.
+      // In other words, are you with a range.
+      isValid = value.length <= rules.maxLength && isValid;
+    }
+    return isValid;
+  }
+
+  inputChangedHandler = (event, controlName) => {
+    // controlName is either:
+    // name, street, zipcode, country, email, or deliveryMethod
+    const updatedControls = {
+      ...this.state.controls,
+      [controlName]: {
+        ...this.state.controls[controlName],
+        value: event.target.value,
+        valid: this.checkValidity(event.target.value, this.state.controls[controlName].validation),
+        touched: true
+      }
+    };
+    this.setState({controls: updatedControls});
+  };
+
+  submitHandler = (event) => {
+    event.preventDefault();
+    this.props.onAuth(this.state.controls.email.value, this.state.controls.password.value);
+  }
+
+  render () {
+
+      const formElememtsArray = [];
+      for (let key in this.state.controls) {
+        // config may have something like:
+        //  elementType: "input", elementConfig: {placeholder: "Zip Code", type: "text"}, value: "", validation: {…}, valid: false, …}
+        formElememtsArray.push({
+          id: key,
+          config: this.state.controls[key]
+        });
+      };
+
+      const form = formElememtsArray.map(formElement => (
+        <Input
+          key={formElement.id}
+          elementType={formElement.config.elementType}
+          elementConfig={formElement.config.elementConfig}
+          value={formElement.config.value}
+          invalid={!formElement.config.valid}
+          shouldValidate={formElement.config.validation}
+          touched={formElement.config.touched}
+          changed={(event) => this.inputChangedHandler(event, formElement.id)}/>
+
+      ));
+      return (
+      <div className={classes.Auth}>
+        <form onSubmit={this.submitHandler}>
+          {form}
+          <Button btnType="Success">SUBMIT</Button >
+        </form>
+      </div>
+    );
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    onAuth: (email, password) => dispatch(actions.auth(email, password))
+  };
+};
+
+export default connect(null,mapDispatchToProps)(Auth);
