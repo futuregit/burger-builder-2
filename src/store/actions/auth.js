@@ -10,7 +10,7 @@ export const authStart = () => {
 export const authSuccess = (token, userId) => {
   return {
     type: actionTypes.AUTH_SUCCESS,
-    token: userId,
+    idToken: token,
     userId: userId
   };
 };
@@ -44,8 +44,9 @@ export const auth = (email, password, isSignup) => {
       password: password,
       returnSecureToken: true
     };
-    let token = '';
+    let token = 'AIzaSyArejSjAWzZ4Ejapkvx7xm043e5bQhg0DI';
     let url = 'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=' + token;
+    console.log("isSignup", isSignup);
     if (!isSignup) {
       url = 'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=' + token;
     }
